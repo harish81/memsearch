@@ -41,6 +41,8 @@ _PARAM_MAP = {
     "llm_provider": "compact.llm_provider",
     "llm_model": "compact.llm_model",
     "prompt_file": "compact.prompt_file",
+    "llm_base_url": "compact.base_url",
+    "llm_api_key": "compact.api_key",
     "max_chunk_size": "chunking.max_chunk_size",
     "overlap_lines": "chunking.overlap_lines",
     "debounce_ms": "watch.debounce_ms",
@@ -454,6 +456,8 @@ def watch(
 @click.option("--output-dir", "-o", default=None, type=click.Path(), help="Directory to write the compact summary into.")
 @click.option("--llm-provider", default=None, help="LLM for summarization.")
 @click.option("--llm-model", default=None, help="Override LLM model.")
+@click.option("--llm-base-url", default=None, help="OpenAI-compatible base URL for the LLM.")
+@click.option("--llm-api-key", default=None, help="API key for the LLM provider.")
 @click.option("--prompt", default=None, help="Custom prompt template (must contain {chunks}).")
 @click.option("--prompt-file", default=None, type=click.Path(exists=True), help="Read prompt template from file.")
 @_common_options
@@ -462,6 +466,8 @@ def compact(
     output_dir: str | None,
     llm_provider: str | None,
     llm_model: str | None,
+    llm_base_url: str | None,
+    llm_api_key: str | None,
     prompt: str | None,
     prompt_file: str | None,
     provider: str | None,
@@ -483,6 +489,7 @@ def compact(
         milvus_uri=milvus_uri, milvus_token=milvus_token,
         llm_provider=llm_provider, llm_model=llm_model,
         prompt_file=prompt_file,
+        llm_base_url=llm_base_url, llm_api_key=llm_api_key,
     ))
 
     prompt_template = prompt
@@ -497,6 +504,8 @@ def compact(
             llm_model=cfg.compact.llm_model or None,
             prompt_template=prompt_template,
             output_dir=output_dir,
+            llm_base_url=cfg.compact.base_url or None,
+            llm_api_key=cfg.compact.api_key or None,
         ))
         if summary:
             click.echo("Compact complete. Summary:\n")

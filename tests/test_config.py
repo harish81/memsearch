@@ -186,3 +186,44 @@ def test_embedding_config_new_fields():
     cfg = EmbeddingConfig()
     assert cfg.base_url == ""
     assert cfg.api_key == ""
+
+
+def test_compact_config_new_fields():
+    """CompactConfig should have base_url and api_key fields with empty defaults."""
+    from memsearch.config import CompactConfig
+    cfg = CompactConfig()
+    assert cfg.base_url == ""
+    assert cfg.api_key == ""
+
+
+def test_compact_config_env_ref_resolved(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """resolve_config should resolve env: references in compact.api_key and compact.base_url."""
+    monkeypatch.setenv("TEST_LLM_KEY", "sk-llm-from-env")
+
+    cfg_file = tmp_path / "config.toml"
+    save_config({
+        "compact": {
+            "api_key": "env:TEST_LLM_KEY",
+            "base_url": "https://my-llm-endpoint.com",
+        },
+    }, cfg_file)
+
+    monkeypatch.setattr("memsearch.config.GLOBAL_CONFIG_PATH", cfg_file)
+    monkeypatch.setattr("memsearch.config.PROJECT_CONFIG_PATH", tmp_path / "nope.toml")
+
+    cfg = resolve_config()
+    assert cfg.compact.api_key == "sk-llm-from-env"
+    assert cfg.compact.base_url == "https://my-llm-endpoint.com"
+
+
+def test_compact_config_set_get_roundtrip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """set_config_value + get_config_value should work for compact.base_url and compact.api_key."""
+    cfg_path = tmp_path / "config.toml"
+    monkeypatch.setattr("memsearch.config.GLOBAL_CONFIG_PATH", cfg_path)
+    monkeypatch.setattr("memsearch.config.PROJECT_CONFIG_PATH", tmp_path / "nope.toml")
+
+    set_config_value("compact.base_url", "https://custom-llm.example.com")
+    set_config_value("compact.api_key", "sk-custom-123")
+    cfg = resolve_config()
+    assert get_config_value("compact.base_url", cfg) == "https://custom-llm.example.com"
+    assert get_config_value("compact.api_key", cfg) == "sk-custom-123"

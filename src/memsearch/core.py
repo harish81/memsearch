@@ -213,6 +213,8 @@ class MemSearch:
         llm_model: str | None = None,
         prompt_template: str | None = None,
         output_dir: str | Path | None = None,
+        llm_base_url: str | None = None,
+        llm_api_key: str | None = None,
     ) -> str:
         """Compress indexed chunks into a summary and append to a daily log.
 
@@ -235,6 +237,12 @@ class MemSearch:
         output_dir:
             Directory to write the compact file into.  Defaults to the
             first entry in *paths*.
+        llm_base_url:
+            Custom base URL for OpenAI-compatible API endpoints.  Only
+            used when *llm_provider* is ``"openai"``.
+        llm_api_key:
+            API key for the LLM provider.  Only used when *llm_provider*
+            is ``"openai"``.
 
         Returns
         -------
@@ -250,6 +258,7 @@ class MemSearch:
         summary = await compact_chunks(
             all_chunks, llm_provider=llm_provider, model=llm_model,
             prompt_template=prompt_template,
+            base_url=llm_base_url, api_key=llm_api_key,
         )
 
         # Write summary to memory/YYYY-MM-DD.md (append)

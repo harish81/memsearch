@@ -90,12 +90,15 @@ ensure_memory_dir() {
   mkdir -p "$MEMORY_DIR"
 }
 
+# Collection description (set by session-start.sh, empty by default)
+COLLECTION_DESC=""
+
 # Helper: run memsearch with arguments, silently fail if not available
 run_memsearch() {
   if [ -n "$MEMSEARCH_CMD" ] && [ -n "$COLLECTION_NAME" ]; then
-    $MEMSEARCH_CMD "$@" --collection "$COLLECTION_NAME" 2>/dev/null || true
+    $MEMSEARCH_CMD "$@" --collection "$COLLECTION_NAME" ${COLLECTION_DESC:+--description "$COLLECTION_DESC"} 2>/dev/null || true
   elif [ -n "$MEMSEARCH_CMD" ]; then
-    $MEMSEARCH_CMD "$@" 2>/dev/null || true
+    $MEMSEARCH_CMD "$@" ${COLLECTION_DESC:+--description "$COLLECTION_DESC"} 2>/dev/null || true
   fi
 }
 
@@ -164,9 +167,9 @@ start_watch() {
   command -v setsid &>/dev/null && launch_prefix="setsid"
 
   if [ -n "$COLLECTION_NAME" ]; then
-    $launch_prefix $MEMSEARCH_CMD watch "$MEMORY_DIR" --collection "$COLLECTION_NAME" </dev/null &>/dev/null &
+    $launch_prefix $MEMSEARCH_CMD watch "$MEMORY_DIR" --collection "$COLLECTION_NAME" ${COLLECTION_DESC:+--description "$COLLECTION_DESC"} </dev/null &>/dev/null &
   else
-    $launch_prefix $MEMSEARCH_CMD watch "$MEMORY_DIR" </dev/null &>/dev/null &
+    $launch_prefix $MEMSEARCH_CMD watch "$MEMORY_DIR" ${COLLECTION_DESC:+--description "$COLLECTION_DESC"} </dev/null &>/dev/null &
   fi
   echo $! > "$WATCH_PIDFILE"
 }

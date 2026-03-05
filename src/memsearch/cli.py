@@ -105,6 +105,7 @@ def cli() -> None:
 @click.argument("paths", nargs=-1, required=True, type=click.Path(exists=True))
 @_common_options
 @click.option("--force", is_flag=True, help="Re-index all files.")
+@click.option("--description", default=None, help="Collection description (written on creation only).")
 def index(
     paths: tuple[str, ...],
     provider: str | None,
@@ -116,6 +117,7 @@ def index(
     milvus_uri: str | None,
     milvus_token: str | None,
     force: bool,
+    description: str | None,
 ) -> None:
     """Index markdown files from PATHS."""
     from .core import MemSearch
@@ -126,7 +128,7 @@ def index(
         collection=collection,
         milvus_uri=milvus_uri, milvus_token=milvus_token,
     ))
-    ms = MemSearch(list(paths), **_cfg_to_memsearch_kwargs(cfg))
+    ms = MemSearch(list(paths), **_cfg_to_memsearch_kwargs(cfg), description=description or "")
     try:
         n = _run(ms.index(force=force))
         click.echo(f"Indexed {n} chunks.")
@@ -406,6 +408,7 @@ def transcript(
 @click.argument("paths", nargs=-1, required=True, type=click.Path(exists=True))
 @_common_options
 @click.option("--debounce-ms", default=None, type=int, help="Debounce delay in ms.")
+@click.option("--description", default=None, help="Collection description (written on creation only).")
 def watch(
     paths: tuple[str, ...],
     provider: str | None,
@@ -417,6 +420,7 @@ def watch(
     milvus_uri: str | None,
     milvus_token: str | None,
     debounce_ms: int | None,
+    description: str | None,
 ) -> None:
     """Watch PATHS for markdown changes and auto-index."""
     from .core import MemSearch
@@ -428,7 +432,7 @@ def watch(
         milvus_uri=milvus_uri, milvus_token=milvus_token,
         debounce_ms=debounce_ms,
     ))
-    ms = MemSearch(list(paths), **_cfg_to_memsearch_kwargs(cfg))
+    ms = MemSearch(list(paths), **_cfg_to_memsearch_kwargs(cfg), description=description or "")
 
     # Initial index: ensure existing files are indexed before watching
     n = _run(ms.index())

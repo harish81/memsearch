@@ -55,6 +55,7 @@ class MemSearch:
         milvus_uri: str = "~/.memsearch/milvus.db",
         milvus_token: str | None = None,
         collection: str = "memsearch_chunks",
+        description: str = "",
         max_chunk_size: int = 1500,
         overlap_lines: int = 2,
     ) -> None:
@@ -70,7 +71,7 @@ class MemSearch:
         )
         self._store = MilvusStore(
             uri=milvus_uri, token=milvus_token, collection=collection,
-            dimension=self._embedder.dimension,
+            dimension=self._embedder.dimension, description=description,
         )
 
     # ------------------------------------------------------------------

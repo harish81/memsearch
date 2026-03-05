@@ -63,6 +63,10 @@ if [ "$KEY_MISSING" = true ]; then
   status+=" | ERROR: ${REQUIRED_KEY} not set — memory search disabled"
 fi
 
+# Build collection description: "<project_basename> | <provider>/<model>"
+PROJECT_BASENAME=$(basename "${CLAUDE_PROJECT_DIR:-.}")
+COLLECTION_DESC="${PROJECT_BASENAME} | ${PROVIDER}/${MODEL:-default}"
+
 # Write session heading to today's memory file
 ensure_memory_dir
 TODAY=$(date +%Y-%m-%d)

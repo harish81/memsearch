@@ -158,3 +158,22 @@ def test_drop(store: MilvusStore):
     store._ensure_collection()
     results = store.search([1.0, 0.0, 0.0, 0.0], top_k=10)
     assert len(results) == 0
+
+
+def test_collection_description(tmp_path: Path):
+    """Collection should store the description when provided."""
+    db = str(tmp_path / "desc_test.db")
+    desc = "myproject | openai/text-embedding-3-small"
+    s = MilvusStore(uri=db, dimension=4, description=desc)
+    info = s._client.describe_collection(s._collection)
+    assert info.get("description") == desc
+    s.close()
+
+
+def test_collection_description_empty_by_default(tmp_path: Path):
+    """Collection should have empty description when not provided."""
+    db = str(tmp_path / "desc_default_test.db")
+    s = MilvusStore(uri=db, dimension=4)
+    info = s._client.describe_collection(s._collection)
+    assert info.get("description") == ""
+    s.close()

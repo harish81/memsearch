@@ -31,6 +31,7 @@ class MilvusStore:
         token: str | None = None,
         collection: str = DEFAULT_COLLECTION,
         dimension: int | None = 1536,
+        description: str = "",
     ) -> None:
         from pymilvus import MilvusClient
 
@@ -53,6 +54,7 @@ class MilvusStore:
         self._client = MilvusClient(**connect_kwargs)
         self._collection = collection
         self._dimension = dimension
+        self._description = description
         self._ensure_collection()
 
     def _ensure_collection(self) -> None:
@@ -65,7 +67,10 @@ class MilvusStore:
 
         from pymilvus import DataType, Function, FunctionType
 
-        schema = self._client.create_schema(enable_dynamic_field=True)
+        schema = self._client.create_schema(
+            enable_dynamic_field=True,
+            description=self._description,
+        )
         schema.add_field(field_name="chunk_hash", datatype=DataType.VARCHAR, max_length=64, is_primary=True)
         schema.add_field(field_name="embedding", datatype=DataType.FLOAT_VECTOR, dim=self._dimension)
         schema.add_field(field_name="content", datatype=DataType.VARCHAR, max_length=65535, enable_analyzer=True)

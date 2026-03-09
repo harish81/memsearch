@@ -83,7 +83,9 @@ ensure_memory_dir
 TODAY=$(date +%Y-%m-%d)
 NOW=$(date +%H:%M)
 MEMORY_FILE="$MEMORY_DIR/$TODAY.md"
-echo -e "\n## Session $NOW\n" >> "$MEMORY_FILE"
+if [ ! -f "$MEMORY_FILE" ] || ! grep -qF "## Session $NOW" "$MEMORY_FILE"; then
+  echo -e "\n## Session $NOW\n" >> "$MEMORY_FILE"
+fi
 
 # If API key is missing, show status and exit early (watch/search would fail)
 if [ "$KEY_MISSING" = true ]; then

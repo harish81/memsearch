@@ -36,7 +36,11 @@ nav:
   - Python API: python-api.md
   - CLI Reference: cli.md
   - Integrations: integrations.md
-  - Claude Code Plugin: claude-plugin.md
+  - Claude Code Plugin:
+    - Overview: claude-plugin/index.md
+    - Hooks: claude-plugin/hooks.md
+    - Progressive Disclosure: claude-plugin/progressive-disclosure.md
+    - Troubleshooting: claude-plugin/troubleshooting.md
   - FAQ: faq.md
 
 markdown_extensions:

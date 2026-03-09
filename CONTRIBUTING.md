@@ -91,6 +91,7 @@ src/memsearch/          # Core Python library
 ccplugin/               # Claude Code plugin (shell hooks)
 ├── .claude-plugin/     # Plugin manifest
 ├── hooks/              # 4 lifecycle hooks + shared utilities
+├── scripts/            # Helper scripts (derive-collection.sh)
 └── skills/             # Memory recall skill
 
 tests/                  # pytest test suite

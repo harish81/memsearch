@@ -41,7 +41,7 @@ Commands:
 | `memsearch stats` | Display index statistics (total chunk count) |
 | `memsearch reset` | Drop all indexed data from the Milvus collection |
 
-> 🔌 Commands marked with 🔌 are designed for the [Claude Code plugin](claude-plugin.md)'s progressive disclosure workflow, but work as standalone CLI tools too.
+> 🔌 Commands marked with 🔌 are designed for the [Claude Code plugin](claude-plugin/index.md)'s progressive disclosure workflow, but work as standalone CLI tools too.
 
 ---
 
@@ -477,7 +477,7 @@ $ memsearch compact --prompt-file ./prompts/compress.txt
 
 ## `memsearch expand`
 
-> 🔌 **Claude Code plugin command.** This command is part of the [Claude Code plugin](claude-plugin.md)'s three-level progressive disclosure workflow (`search` → `expand` → `transcript`), but works as a standalone CLI tool for any memsearch index.
+> 🔌 **Claude Code plugin command.** This command is part of the [Claude Code plugin](claude-plugin/index.md)'s three-level progressive disclosure workflow (`search` → `expand` → `transcript`), but works as a standalone CLI tool for any memsearch index.
 
 Look up a chunk by its hash in the index and return the surrounding context from the original source markdown file. This is "progressive disclosure level 2" -- when a search result snippet is not enough, expand it to see the full heading section.
 
@@ -553,7 +553,7 @@ $ memsearch expand a1b2c3d4e5f6 --json-output
 
 ## `memsearch transcript`
 
-> 🔌 **Claude Code plugin command.** This command is part of the [Claude Code plugin](claude-plugin.md)'s three-level progressive disclosure workflow (`search` → `expand` → `transcript`), but works as a standalone CLI tool for any JSONL transcript.
+> 🔌 **Claude Code plugin command.** This command is part of the [Claude Code plugin](claude-plugin/index.md)'s three-level progressive disclosure workflow (`search` → `expand` → `transcript`), but works as a standalone CLI tool for any JSONL transcript.
 
 Parse a JSONL transcript file (e.g., from Claude Code) and display conversation turns. This is "progressive disclosure level 3" -- drill all the way down from a memory chunk to the original conversation that generated it.
 

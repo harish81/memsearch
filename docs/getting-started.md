@@ -44,8 +44,8 @@ sequenceDiagram
     U->>M: mem.search("Redis?")
     M->>E: Embed query
     E-->>M: Query vector
-    M->>V: Cosine similarity
-    V-->>M: Top-K matches
+    M->>V: Hybrid search (dense + BM25)
+    V-->>M: RRF-reranked Top-K matches
     M-->>U: Results with source info
 ```
 
@@ -561,4 +561,4 @@ $ memsearch search "Redis config" --top-k 10 --milvus-uri http://10.0.0.5:19530
 
 - **[Architecture](architecture.md)** -- deep dive into the chunking pipeline, dedup strategy, and data flow diagrams
 - **[CLI Reference](cli.md)** -- complete reference for all `memsearch` commands, flags, and options
-- **[Claude Code Plugin](claude-plugin.md)** -- give Claude automatic persistent memory across sessions with zero configuration
+- **[Claude Code Plugin](claude-plugin/index.md)** -- give Claude automatic persistent memory across sessions with zero configuration

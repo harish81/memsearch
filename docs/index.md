@@ -16,10 +16,11 @@ The vector store is just a derived index — rebuildable anytime.
 ```
 
 - **OpenClaw's memory, everywhere** -- markdown as the single source of truth
+- **Hybrid search** -- dense vector + BM25 sparse + RRF reranking for better recall
 - **Smart dedup** -- SHA-256 content hashing means unchanged content is never re-embedded
 - **Live sync** -- file watcher auto-indexes on changes, deletes stale chunks
 - **Memory compact** -- LLM-powered summarization compresses old memories
-- **[Ready-made Claude Code plugin](claude-plugin.md)** -- a drop-in example of agent memory built on memsearch
+- **[Ready-made Claude Code plugin](claude-plugin/index.md)** -- a drop-in example of agent memory built on memsearch
 
 ---
 
@@ -34,7 +35,7 @@ This means:
 - **Rebuild on demand** -- corrupted index? Just re-run `memsearch index` and you are back in seconds
 - **Git-native** -- version your knowledge base with standard git workflows
 
-memsearch scans your markdown directories, splits content into semantically meaningful chunks (by heading structure and paragraph boundaries), embeds them, and stores the vectors in Milvus. When you search, it finds the most relevant chunks by cosine similarity and returns them with full source attribution.
+memsearch scans your markdown directories, splits content into semantically meaningful chunks (by heading structure and paragraph boundaries), embeds them, and stores the vectors in Milvus. When you search, it uses hybrid search (dense vector + BM25 sparse + RRF reranking) to find the most relevant chunks and returns them with full source attribution.
 
 ---
 
@@ -125,7 +126,7 @@ $ memsearch search "that article about distributed consensus"
 
 ### Agent Memory
 
-Give your AI agent persistent, searchable memory. The agent writes observations to markdown files; memsearch indexes them and retrieves relevant context on the next turn. This is exactly how [OpenClaw](https://github.com/openclaw/openclaw) manages memory, and memsearch ships with a ready-made [Claude Code plugin](claude-plugin.md) that demonstrates the pattern.
+Give your AI agent persistent, searchable memory. The agent writes observations to markdown files; memsearch indexes them and retrieves relevant context on the next turn. This is exactly how [OpenClaw](https://github.com/openclaw/openclaw) manages memory, and memsearch ships with a ready-made [Claude Code plugin](claude-plugin/index.md) that demonstrates the pattern.
 
 ```python
 mem = MemSearch(paths=["./agent-memory/"])

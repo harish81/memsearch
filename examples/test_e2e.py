@@ -8,11 +8,11 @@ mem = MemSearch(
     milvus_uri="http://10.100.30.11:19530",
 )
 
-# 首先索引现有文件
+# Index existing files first
 asyncio.run(mem.index())
 
 
-# 开始监视
+# Start watching for changes
 def on_event(event_type, summary, file_path):
     print(f"[{event_type}] {summary}")
 

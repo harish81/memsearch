@@ -69,7 +69,10 @@ if [ -n "$VERSION" ]; then
       UPGRADE_CMD="uvx --upgrade --from 'memsearch[onnx]' memsearch --version"
     else
       _MS_PATH=$(command -v memsearch 2>/dev/null || true)
-      _MS_REAL=$(readlink -f "$_MS_PATH" 2>/dev/null || echo "$_MS_PATH")
+      # readlink -f works on Linux; macOS needs python3 fallback
+      _MS_REAL=$(readlink -f "$_MS_PATH" 2>/dev/null \
+        || python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" "$_MS_PATH" 2>/dev/null \
+        || echo "$_MS_PATH")
       if [[ "$_MS_REAL" == *"uv/tools"* ]]; then
         UPGRADE_CMD="uv tool upgrade memsearch"
       else

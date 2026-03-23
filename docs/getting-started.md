@@ -385,7 +385,7 @@ Zero-ops, auto-scaling managed Milvus. **[Get a free cluster →](https://cloud.
 
 **Best for:** production deployments, teams that do not want to manage infrastructure, anyone who wants real-time indexing without running Docker.
 
-<details>
+<details markdown>
 <summary>Sign up for a free Zilliz Cloud cluster 👈</summary>
 
 You can [sign up](https://cloud.zilliz.com/signup?utm_source=github&utm_medium=referral&utm_campaign=memsearch-docs) on Zilliz Cloud to get a free cluster and API key.

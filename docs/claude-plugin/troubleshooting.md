@@ -220,7 +220,7 @@ pgrep -f "memsearch watch" && echo "found orphans" || echo "clean"
 
 The watch process is started by `SessionStart` and stopped by `SessionEnd`. If Claude Code crashes or is killed with SIGKILL, the `SessionEnd` hook won't fire and the process may become orphaned. The next `SessionStart` always stops any existing watch before starting a new one.
 
-> **Note:** Milvus Lite does not support concurrent access, so the plugin falls back to one-time indexing at session start instead of a persistent watcher. For real-time indexing, use [Milvus Server or Zilliz Cloud](../getting-started.md#milvus-backend).
+> **Note:** Milvus Lite does not support concurrent access, so the plugin falls back to one-time indexing at session start instead of a persistent watcher. For real-time indexing, use [Milvus Server or Zilliz Cloud](../getting-started.md#milvus-backends).
 
 ---
 

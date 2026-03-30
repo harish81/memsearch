@@ -7,10 +7,12 @@
 /plugin marketplace add zilliztech/memsearch
 /plugin install memsearch
 
-# 2. Have a conversation, then exit. Check your memories:
+# 2. Restart Claude Code to activate the plugin (exit and reopen)
+
+# 3. Have a conversation, then exit. Check your memories:
 cat .memsearch/memory/$(date +%Y-%m-%d).md
 
-# 3. Start a new session -- Claude automatically remembers!
+# 4. Start a new session -- Claude automatically remembers!
 ```
 
 ## Install from Source (development)

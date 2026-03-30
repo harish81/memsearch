@@ -44,9 +44,10 @@ Pick your platform, install the plugin, and you're done. Each plugin captures co
 # Install
 /plugin marketplace add zilliztech/memsearch
 /plugin install memsearch
+# Restart Claude Code to activate the plugin
 ```
 
-After installing, just chat with Claude Code as usual. The plugin captures every conversation turn automatically.
+After restarting, just chat with Claude Code as usual. The plugin captures every conversation turn automatically.
 
 **Verify it's working** — after a few conversations, check your memory files:
 
@@ -58,7 +59,7 @@ cat .memsearch/memory/$(date +%Y-%m-%d).md
 **Recall memories** — Claude searches automatically when relevant, or trigger manually:
 
 ```
-/memsearch:memory-recall what did we discuss about Redis?
+/memory-recall what did we discuss about Redis?
 ```
 
 > 📖 [Claude Code Plugin docs](https://zilliztech.github.io/memsearch/platforms/claude-code/) · [Troubleshooting](https://zilliztech.github.io/memsearch/platforms/claude-code-troubleshooting/)

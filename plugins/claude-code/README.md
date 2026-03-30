@@ -91,10 +91,12 @@ sequenceDiagram
 /plugin marketplace add zilliztech/memsearch
 /plugin install memsearch
 
-# 2. Have a conversation, then exit. Check your memories:
+# 2. Restart Claude Code to activate the plugin (exit and reopen)
+
+# 3. Have a conversation, then exit. Check your memories:
 cat .memsearch/memory/$(date +%Y-%m-%d).md
 
-# 3. Start a new session — Claude automatically remembers!
+# 4. Start a new session — Claude automatically remembers!
 ```
 
 > **Note:** The plugin defaults to the **ONNX bge-m3** embedding model — no API key required, runs locally on CPU. This model was selected through a [comprehensive benchmark](../../evaluation/README.md) of 12+ models on bilingual memory retrieval. If memsearch is not already installed, the plugin will install `memsearch[onnx]` automatically via `uvx` on first run. To use a different embedding provider (e.g. OpenAI), set it with `memsearch config set embedding.provider openai` and export the required API key.

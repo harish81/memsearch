@@ -163,18 +163,37 @@ def get_new_completed_turns(conn, project_dir, last_msg_time):
             if role == "user":
                 user_text = _extract_msg_text(conn, messages[i][0], messages[i][1])
                 assistant_text = ""
-                # Look for following assistant message
-                if i + 1 < len(messages):
-                    next_data = json.loads(messages[i + 1][1])
-                    if next_data.get("role") == "assistant":
-                        assistant_text = _extract_msg_text(conn, messages[i + 1][0], messages[i + 1][1])
-                        msg_time = messages[i + 1][2]
-                        i += 1
+                tool_hints = []
+                # Scan forward through assistant messages (may span tool use/result cycles)
+                j = i + 1
+                while j < len(messages):
+                    next_data = json.loads(messages[j][1])
+                    next_role = next_data.get("role", "")
+                    if next_role == "assistant":
+                        # Collect tool hints from every assistant step.
+                        tool_hints.extend(_extract_tool_hints(conn, messages[j][0]))
+                        # Only accept text from messages with actual text parts.
+                        # Tool-only steps (finish="tool-calls") have no type=text parts;
+                        # accepting them here would capture an incomplete turn and advance
+                        # last_msg_time, permanently skipping the real final response.
+                        if _has_text_content(conn, messages[j][0]):
+                            candidate = _extract_msg_text(conn, messages[j][0], messages[j][1])
+                            if candidate:
+                                assistant_text = candidate
+                        msg_time = messages[j][2]
+                        i = j
+                        j += 1
+                    elif next_role == "user":
+                        # Next human message — stop scanning
+                        break
+                    else:
+                        j += 1
 
-                if user_text and len(user_text) > 5:
-                    turn = f"[Human]: {user_text[:2000]}"
-                    if assistant_text:
-                        turn += f"\n\n[Assistant]: {assistant_text[:2000]}"
+                if user_text and len(user_text) > 5 and assistant_text:
+                    tool_prefix = ""
+                    if tool_hints:
+                        tool_prefix = "[Tools used: " + ", ".join(tool_hints) + "]\n"
+                    turn = f"[Human]: {user_text[:2000]}\n\n[Assistant]: {tool_prefix}{assistant_text[:2000]}"
                     results.append((session_id, turn, msg_time))
             i += 1
 
@@ -206,6 +225,41 @@ def _extract_msg_text(conn, msg_id, msg_json):
             text_parts.append(f"[Tool: {tool_name}{hint}]")
 
     return "\n".join(text_parts)
+
+
+def _extract_tool_hints(conn, msg_id):
+    """Return list of tool hint strings (e.g. 'read_file /foo/bar') for a message."""
+    parts = conn.execute(
+        "SELECT data FROM part WHERE message_id = ? ORDER BY time_created ASC",
+        (msg_id,),
+    ).fetchall()
+    hints = []
+    for (part_json,) in parts:
+        part_data = json.loads(part_json)
+        if part_data.get("type") == "tool" and part_data.get("state", {}).get("status") == "completed":
+            tool_name = part_data.get("tool", "unknown")
+            tool_input = part_data.get("state", {}).get("input", {})
+            hint = tool_name
+            if isinstance(tool_input, dict):
+                if "command" in tool_input:
+                    hint += f" `{tool_input['command'][:60]}`"
+                elif "path" in tool_input:
+                    hint += f" {tool_input['path']}"
+            hints.append(hint)
+    return hints
+
+
+def _has_text_content(conn, msg_id):
+    """Return True if message has at least one non-synthetic text part."""
+    parts = conn.execute(
+        "SELECT data FROM part WHERE message_id = ? ORDER BY time_created ASC",
+        (msg_id,),
+    ).fetchall()
+    for (part_json,) in parts:
+        part_data = json.loads(part_json)
+        if part_data.get("type") == "text" and part_data.get("text") and not part_data.get("synthetic"):
+            return True
+    return False
 
 
 def write_capture(memory_dir, turn_text, session_id, db_path=""):

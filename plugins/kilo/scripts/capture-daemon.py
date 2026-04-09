@@ -35,7 +35,7 @@ def get_small_model():
             try:
                 with open(p) as f:
                     cfg = json.load(f)
-                return cfg.get("small_model", "")
+                cfg.get("small_model", cfg.get("model", ""))
             except Exception:
                 pass
     return ""
